@@ -1,4 +1,4 @@
-package model;
+package main.java.model;
 
 /**
  * Created by plouzeau on 2014-10-09.
@@ -8,7 +8,7 @@ package model;
 public interface Board {
 
 
-    public int getSideSizeInSquares();
+    int getSideSizeInSquares();
 
     /**
      * Return the tile at a given coordinate, or null if none exists there.
@@ -20,8 +20,8 @@ public interface Board {
      */
     Tile getTile(int lineNumber, int columnNumber);
 
-    public enum Direction {
-        LEFT, RIGHT, TOP, BOTTOM;
+    enum Direction {
+        LEFT, RIGHT, TOP, BOTTOM
     }
 
     /**

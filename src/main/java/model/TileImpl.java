@@ -1,4 +1,4 @@
-package model;
+package main.java.model;
 
 /**
  * Created by plouzeau on 2014-10-09.
@@ -19,5 +19,10 @@ public class TileImpl implements Tile  {
     @Override
     public void incrementRank() {
         this.rank++;
+    }
+
+    @Override
+    public boolean equals(Tile tile) {
+        return getRank()==tile.getRank();
     }
 }

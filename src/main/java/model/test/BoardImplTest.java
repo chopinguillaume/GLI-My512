@@ -1,4 +1,4 @@
-package model.test;
+package main.java.model.test;
 
 
 import org.junit.Assert;
@@ -7,9 +7,9 @@ import org.junit.Test;
 
 import java.util.logging.Logger;
 
-import model.Board;
-import model.BoardImpl;
-import model.Tile;
+import main.java.model.Board;
+import main.java.model.BoardImpl;
+import main.java.model.Tile;
 
 public class BoardImplTest {
 

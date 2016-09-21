@@ -1,6 +1,9 @@
-package model;
+package main.java.model;
 
+import java.util.Random;
 import java.util.logging.Logger;
+
+import main.java.model.test.Index;
 
 /**
  * Created by plouzeau on 2014-10-09.
@@ -18,13 +21,55 @@ public class BoardImpl implements Board {
         this.sideSizeInSquares = sideSizeInSquares;
         currentBoard = new Tile[sideSizeInSquares][sideSizeInSquares];
         nextBoard = new Tile[sideSizeInSquares][sideSizeInSquares];
+
+        initRandomBoard();
+    }
+
+    private void initRandomBoard() {
+        writeOneRandomTile();
+        writeOneRandomTile();
+    }
+
+    private void writeOneRandomTile() {
+        Index index = getRandomEmptyTileIndex();
+        if (index != null) {
+            int rank = new Random().nextInt(2)+1;
+            Tile tile = new TileImpl(rank);
+            currentBoard[index.getRow()-1][index.getCol()-1] = tile;
+        }
+    }
+
+    private Index getRandomEmptyTileIndex(){
+        if(isFull()){
+            return null;
+        }
+        Index res = null;
+        Random rand = new Random();
+        while(res == null){
+            int row = rand.nextInt(4) + 1;
+            int col = rand.nextInt(4) + 1;
+            if(getTile(row,col) == null){
+                res = new Index(row,col);
+            }
+        }
+        return res;
+    }
+
+    private boolean isFull() {
+        for (int i = 0; i < getSideSizeInSquares(); i++) {
+            for (int j = 0; j < getSideSizeInSquares(); j++) {
+                if(getTile(i+1,j+1) == null){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
     public int getSideSizeInSquares() {
         return this.sideSizeInSquares;
     }
-
 
     private Tile[][] currentBoard;
     private Tile[][] nextBoard;
@@ -52,7 +97,35 @@ public class BoardImpl implements Board {
         for (int i = 1; i <= sideSizeInSquares; i++) {
             packLine(i);
         }
+        if(! boardsAreEqual()){
+            commit();
+            writeOneRandomTile();
+        }
+        else{
+            commit();
+        }
+    }
 
+    private boolean boardsAreEqual() {
+        for (int i = 0; i < currentBoard.length; i++) {
+            for (int j = 0; j < currentBoard[i].length; j++) {
+                if(currentBoard[i][j] == null){
+                    if(nextBoard[i][j] != null){
+                        return false;
+                    }
+                }else{
+                    if(nextBoard[i][j] == null){
+                        return false;
+                    }
+                    else{
+                        if(! currentBoard[i][j].equals(nextBoard[i][j])){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -61,7 +134,6 @@ public class BoardImpl implements Board {
      */
     @Override
     public void commit() {
-
         currentBoard = nextBoard;
         nextBoard = new Tile[sideSizeInSquares][sideSizeInSquares];
     }
@@ -127,8 +199,7 @@ public class BoardImpl implements Board {
     private Tile readTile(Tile[][] board, int lineIndex, int columnIndex) {
         int boardLineIndex = computeLineIndex(lineIndex, columnIndex);
         int boardColumnIndex = computeColumnIndex(lineIndex, columnIndex);
-        Tile currentTile = board[boardLineIndex][boardColumnIndex];
-        return currentTile;
+        return board[boardLineIndex][boardColumnIndex];
     }
 
     /**
@@ -212,7 +283,7 @@ public class BoardImpl implements Board {
 
         logger.info(message);
         for (int i = 0; i < sideSizeInSquares; i++) {
-            StringBuffer outputBuffer = new StringBuffer();
+            StringBuilder outputBuffer = new StringBuilder();
             outputBuffer.append(i + 1);
             outputBuffer.append(":{");
             for (int j = 0; j < sideSizeInSquares; j++) {
